@@ -93,3 +93,7 @@ export class AppService {
 ## Usage Notice
 
 This package was created to share internal code and may be used as-is. Please note that no guarantees are made regarding the functionality or suitability of the code in all environments.
+
+## Additional Resources
+
+For more details on using Nest.js, refer to the official documentation: [Nest.js Microservices Overview](https://docs.nestjs.com/microservices/basics).
