@@ -1,5 +1,5 @@
 {
-  "name": "nestjs-microservices-aws-iot",
+  "name": "@tazaki/nestjs-microservices-aws-iot",
   "version": "0.0.1",
   "description": "AWS IoT Client Wrapper for Nest.js Microservices",
   "main": "dist/index.js",

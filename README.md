@@ -1,4 +1,4 @@
-# nestjs-microservices-aws-iot
+# @tazaki/nestjs-microservices-aws-iot
 
 ## Overview
 
@@ -16,13 +16,13 @@ This package provides a seamless wrapper for the `AWS IoT SDK` within Nest.js mi
 
 ```bash
 # for npm
-npm install nestjs-microservices-aws-iot
+npm install @tazaki/nestjs-microservices-aws-iot
 
 # for yarn
-yarn add nestjs-microservices-aws-iot
+yarn add @tazaki/nestjs-microservices-aws-iot
 
 # for pnpm
-pnpm add nestjs-microservices-aws-iot
+pnpm add @tazaki/nestjs-microservices-aws-iot
 ```
 
 ## Usage
@@ -32,7 +32,7 @@ pnpm add nestjs-microservices-aws-iot
 To subscribe to a topic, set up the microservice in your `main.ts` as follows:
 
 ```typescript
-import { AwsIotServer } from 'nestjs-microservices-aws-iot';
+import { AwsIotServer } from '@tazaki/nestjs-microservices-aws-iot';
 
 const app = await NestFactory.createMicroservice<MicroserviceOptions>(
   AppModule,
@@ -65,7 +65,7 @@ Then, in your controller, listen to incoming messages from the topic:
 ### Publishing a Message to an MQTT Topic
 
 ```typescript
-import { AwsIotClient } from 'nestjs-microservices-aws-iot';
+import { AwsIotClient } from '@tazaki/nestjs-microservices-aws-iot';
 
 export class AppService {
   private client: AwsIotClient;
