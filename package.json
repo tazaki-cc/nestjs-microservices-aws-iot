@@ -5,7 +5,17 @@
   "main": "dist/index.js",
   "author": "TAZAKI <dev@tazaki.cc> (https://tazaki.cc)",
   "license": "MIT",
-  "homepage": "https://github.com/tazaki",
+  "homepage": "https://github.com/tazaki-cc/nestjs-microservices-aws-iot",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tazaki-cc/nestjs-microservices-aws-iot.git"
+  },
+  "keywords": [
+    "nestjs",
+    "microservices",
+    "aws",
+    "iot"
+  ],
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.json",
