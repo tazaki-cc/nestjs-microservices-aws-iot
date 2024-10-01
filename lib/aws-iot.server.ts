@@ -1,11 +1,10 @@
 import {
   CustomTransportStrategy,
   MessageHandler,
-  MqttContext,
   Server,
 } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
-import { AwsIotOptions } from './aws-iot.interface';
+import { AwsIotOptions, AwsIotPayload } from './aws-iot.interface';
 import { mqtt5, iot } from 'aws-crt';
 
 export class AwsIotServer extends Server implements CustomTransportStrategy {
@@ -133,11 +132,11 @@ export class AwsIotServer extends Server implements CustomTransportStrategy {
   private async messageHandler(
     key: string,
     topic: string,
-    payload: any,
+    payload: AwsIotPayload,
     handler: MessageHandler,
   ) {
     if (this.matchMqttPattern(key, topic)) {
-      await handler(payload, new MqttContext(payload));
+      await handler(payload.payload, payload);
     }
   }
 }
