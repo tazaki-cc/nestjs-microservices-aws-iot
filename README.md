@@ -33,6 +33,7 @@ To subscribe to a topic, set up the microservice in your `main.ts` as follows:
 
 ```typescript
 import { AwsIotServer } from '@tazaki/nestjs-microservices-aws-iot';
+import type { AwsIotContext } from '@tazaki/nestjs-microservices-aws-iot';
 
 const app = await NestFactory.createMicroservice<MicroserviceOptions>(
   AppModule,
@@ -51,12 +52,12 @@ Then, in your controller, listen to incoming messages from the topic:
 ```typescript
 ...
   @MessagePattern('awesomeTopic')
-  topic(@Payload() data: any, @Ctx() context: any) {
+  topic(@Payload() data: any, @Ctx() context: AwsIotContext) {
     console.log(data, context);
   }
 
   @MessagePattern('wildcardTopic/+/hello')
-  wildcard(@Payload() data: any, @Ctx() context: any) {
+  wildcard(@Payload() data: any, @Ctx() context: AwsIotContext) {
     console.log(data, context);
   }
 ...
