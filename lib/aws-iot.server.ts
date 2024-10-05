@@ -51,7 +51,7 @@ export class AwsIotServer extends Server implements CustomTransportStrategy {
     this.client.on('messageReceived', (event) => {
       const packet = event.message;
       const topic = packet.topicName;
-      const data = Object.assign(event.message, {
+      const data: AwsIotPayload<any> = Object.assign(event.message, {
         payload: JSON.parse(
           Buffer.from(packet.payload as ArrayBuffer).toString('utf-8'),
         ),
@@ -97,7 +97,7 @@ export class AwsIotServer extends Server implements CustomTransportStrategy {
     }
   }
 
-  private handleMessage(topic: string, payload: mqtt5.PublishPacket) {
+  private handleMessage(topic: string, payload: AwsIotPayload) {
     this.messageHandlers.forEach((handler, key) => {
       this.messageHandler(key, topic, payload, handler);
     });
