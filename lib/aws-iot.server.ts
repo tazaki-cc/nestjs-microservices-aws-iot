@@ -51,11 +51,16 @@ export class AwsIotServer extends Server implements CustomTransportStrategy {
     this.client.on('messageReceived', (event) => {
       const packet = event.message;
       const topic = packet.topicName;
-      const data: AwsIotPayload<any> = Object.assign(event.message, {
-        payload: JSON.parse(
-          Buffer.from(packet.payload as ArrayBuffer).toString('utf-8'),
-        ),
-      });
+      const payload = Buffer.from(packet.payload as ArrayBuffer).toString(
+        'utf-8',
+      );
+      let data: AwsIotPayload<any>;
+      try {
+        data = JSON.parse(payload);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_) {
+        data = payload;
+      }
       this.handleMessage(topic, data);
     });
 
