@@ -4,7 +4,11 @@ import {
   Server,
 } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
-import { AwsIotOptions, AwsIotPayload } from './aws-iot.interface';
+import {
+  AwsIotContext,
+  AwsIotOptions,
+  AwsIotPayload,
+} from './aws-iot.interface';
 import { mqtt5, iot } from 'aws-crt';
 
 export class AwsIotServer extends Server implements CustomTransportStrategy {
@@ -61,7 +65,10 @@ export class AwsIotServer extends Server implements CustomTransportStrategy {
       } catch (_) {
         data = payload;
       }
-      this.handleMessage(topic, data);
+      this.handleMessage(topic, {
+        ...packet,
+        payload: data,
+      });
     });
 
     this.client.on('error', (error) => {
@@ -102,7 +109,7 @@ export class AwsIotServer extends Server implements CustomTransportStrategy {
     }
   }
 
-  private handleMessage(topic: string, payload: AwsIotPayload) {
+  private handleMessage(topic: string, payload: AwsIotContext) {
     this.messageHandlers.forEach((handler, key) => {
       this.messageHandler(key, topic, payload, handler);
     });
@@ -137,7 +144,7 @@ export class AwsIotServer extends Server implements CustomTransportStrategy {
   private async messageHandler(
     key: string,
     topic: string,
-    payload: AwsIotPayload,
+    payload: AwsIotContext,
     handler: MessageHandler,
   ) {
     if (this.matchMqttPattern(key, topic)) {
