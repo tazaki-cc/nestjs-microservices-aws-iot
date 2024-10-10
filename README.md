@@ -50,14 +50,18 @@ const app = await NestFactory.createMicroservice<MicroserviceOptions>(
 Then, in your controller, listen to incoming messages from the topic:
 
 ```typescript
+interface PayloadResponse {
+  hello: string;
+}
+
 ...
   @MessagePattern('awesomeTopic')
-  topic(@Payload() data: any, @Ctx() context: AwsIotContext) {
+  topic(@Payload() data: AwsIotPayload<PayloadResponse>, @Ctx() context: AwsIotContext<PayloadResponse>) {
     console.log(data, context);
   }
 
   @MessagePattern('wildcardTopic/+/hello')
-  wildcard(@Payload() data: any, @Ctx() context: AwsIotContext) {
+  wildcard(@Payload() data: AwsIotPayload<PayloadResponse>, @Ctx() context: AwsIotContext<PayloadResponse>) {
     console.log(data, context);
   }
 ...
