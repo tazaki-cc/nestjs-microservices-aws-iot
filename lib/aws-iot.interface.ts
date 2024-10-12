@@ -11,3 +11,7 @@ export type AwsIotPayload<T = Record<string, unknown>> = T;
 export type AwsIotContext<T = Record<string, unknown>> = {
   payload: AwsIotPayload<T>;
 } & Omit<PublishPacket, 'payload'>;
+
+export interface AwsIotExtrasOptions {
+  disabled: boolean;
+}
