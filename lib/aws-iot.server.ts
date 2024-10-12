@@ -6,6 +6,7 @@ import {
 import { Logger } from '@nestjs/common';
 import {
   AwsIotContext,
+  AwsIotExtrasOptions,
   AwsIotOptions,
   AwsIotPayload,
 } from './aws-iot.interface';
@@ -34,17 +35,22 @@ export class AwsIotServer extends Server implements CustomTransportStrategy {
   async listen(callback: () => void) {
     try {
       this.createMqttConnection();
-      this.messageHandlers.forEach((_, key) => {
-        this.client
-          .subscribe({
-            subscriptions: [{ topicFilter: key, qos: mqtt5.QoS.AtLeastOnce }],
-          })
-          .then(() =>
-            this.logger.log(`Subscribed to topic "${key}" successfully`),
-          )
-          .catch((err) =>
-            this.logger.error(`Failed to subscribe to topic "${key}"`, err),
-          );
+      this.messageHandlers.forEach((handler, key) => {
+        const extras = handler.extras as unknown as AwsIotExtrasOptions;
+        if (!extras?.disabled) {
+          this.client
+            .subscribe({
+              subscriptions: [{ topicFilter: key, qos: mqtt5.QoS.AtLeastOnce }],
+            })
+            .then(() =>
+              this.logger.log(`Subscribed to topic "${key}" successfully`),
+            )
+            .catch((err) =>
+              this.logger.error(`Failed to subscribe to topic "${key}"`, err),
+            );
+        } else {
+          this.logger.log(`Disabled to topic "${key}"`);
+        }
       });
 
       callback();
