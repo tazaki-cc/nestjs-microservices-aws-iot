@@ -11,6 +11,7 @@ import {
   AwsIotPayload,
 } from './aws-iot.interface';
 import { mqtt5, iot } from 'aws-crt';
+import { v4 as uuidV4 } from 'uuid';
 
 export class AwsIotServer extends Server implements CustomTransportStrategy {
   protected logger = new Logger(AwsIotServer.name);
@@ -104,9 +105,19 @@ export class AwsIotServer extends Server implements CustomTransportStrategy {
           this.connectionEndpoint,
           this.certPath,
           this.keyPath,
-        ).build();
+        );
 
-      const client = new mqtt5.Mqtt5Client(builder);
+      builder.withConnectProperties({
+        keepAliveIntervalSeconds: 1200,
+        clientId: uuidV4(),
+      });
+      builder.withSessionBehavior(mqtt5.ClientSessionBehavior.RejoinAlways);
+      builder.withRetryJitterMode(mqtt5.RetryJitterType.Full);
+      builder.withMinReconnectDelayMs(1000); // 1초
+      builder.withMaxReconnectDelayMs(120000); // 2분
+      builder.withMinConnectedTimeToResetReconnectDelayMs(30000); // 30초
+
+      const client = new mqtt5.Mqtt5Client(builder.build());
       client.start();
       this.logger.log('AWS IoT client connect');
 

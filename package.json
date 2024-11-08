@@ -63,5 +63,8 @@
     "*.ts": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "uuid": "^11.0.2"
   }
 }
