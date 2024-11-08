@@ -2,6 +2,7 @@ import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
 import { iot, mqtt5 } from 'aws-crt';
 import { AwsIotOptions } from './aws-iot.interface';
 import { Logger } from '@nestjs/common';
+import { v4 as uuidV4 } from 'uuid';
 
 export class AwsIotClient extends ClientProxy {
   protected logger = new Logger(AwsIotClient.name);
@@ -82,9 +83,20 @@ export class AwsIotClient extends ClientProxy {
           this.connectionEndpoint,
           this.certPath,
           this.keyPath,
-        ).build();
+        );
 
-      const client = new mqtt5.Mqtt5Client(builder);
+      builder.withConnectProperties({
+        keepAliveIntervalSeconds: 1200,
+        clientId: uuidV4(),
+      });
+      builder.withSessionBehavior(mqtt5.ClientSessionBehavior.RejoinAlways);
+      builder.withRetryJitterMode(mqtt5.RetryJitterType.Full);
+      builder.withMinReconnectDelayMs(1000); // 1초
+      builder.withMaxReconnectDelayMs(120000); // 2분
+      builder.withMinConnectedTimeToResetReconnectDelayMs(30000); // 30초
+
+      const client = new mqtt5.Mqtt5Client(builder.build());
+
       client.start();
 
       this.client = client;
