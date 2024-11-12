@@ -40,7 +40,6 @@ export class AwsIotClient extends ClientProxy {
   async dispatchEvent(packet: ReadPacket): Promise<any> {
     const pattern = this.normalizePattern(packet.pattern);
     const message = JSON.stringify(packet.data);
-    this.logger.log(`Dispatching event: ${pattern}`, packet);
 
     return new Promise<void>(() =>
       this.client.publish({
