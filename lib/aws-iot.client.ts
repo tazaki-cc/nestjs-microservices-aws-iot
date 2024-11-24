@@ -85,7 +85,7 @@ export class AwsIotClient extends ClientProxy {
         );
 
       builder.withConnectProperties({
-        keepAliveIntervalSeconds: 1200,
+        keepAliveIntervalSeconds: 60,
         clientId: uuidV4(),
       });
       builder.withSessionBehavior(mqtt5.ClientSessionBehavior.RejoinAlways);
@@ -99,6 +99,34 @@ export class AwsIotClient extends ClientProxy {
       client.start();
 
       this.client = client;
+
+      this.client.on(
+        'attemptingConnect',
+        (eventData: mqtt5.AttemptingConnectEvent) => {
+          console.log('[MQTT] 연결 시도 중...');
+        },
+      );
+
+      this.client.on(
+        'connectionSuccess',
+        (eventData: mqtt5.ConnectionSuccessEvent) => {
+          console.log('[MQTT] 연결 성공');
+        },
+      );
+
+      this.client.on(
+        'connectionFailure',
+        (eventData: mqtt5.ConnectionFailureEvent) => {
+          console.log(`[MQTT] 연결 실패: ${eventData.error.toString()}`);
+          if (eventData.connack) {
+            console.log(`[MQTT] 연결 실패: ${eventData.connack}`);
+          }
+        },
+      );
+
+      this.client.on('disconnection', (eventData: mqtt5.DisconnectionEvent) => {
+        console.log(`[MQTT] 연결 끊김: ${eventData.error.toString()}`);
+      });
     } catch (e) {
       this.logger.error('Failed to connect to AWS IoT', e);
     }
